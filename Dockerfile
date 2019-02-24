@@ -8,7 +8,7 @@ RUN apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash
 RUN apt-get install -y nodejs
 
-#install Openshift-client
+# Install Openshift-client
 RUN cd /tmp \
   && apt-get update \
   && apt-get install -y wget \
@@ -18,18 +18,21 @@ RUN cd /tmp \
   && rm -rf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
 
 # Copy the current directory contents into the container
-ADD . /app
+COPY package.json /app/package.json
 
 # Set the working directory to /app
-WORKDIR /app/src
+WORKDIR /app
 
 # Install any needed packages specified in requirements.txt
 RUN npm install
 
+# Copy files to container
+COPY . /app
+
+#RUN oc login https://api.starter-us-east-1.openshift.com --token=U7RGxMVNkfafR4Oy3gqPtp9AId-d6Kx1A7wjP1QJ-wQ
+
 # Make port 4000 available outside this container
 EXPOSE 4000
-
-RUN oc login https://api.starter-us-west-2.openshift.com --token=OtyWuoPZiWSmYhIMJr1TxSe4tu_yVPDxezHXdHnOy1k
 
 # Run `npm start` when the container launches
 CMD ["npm", "start"]
